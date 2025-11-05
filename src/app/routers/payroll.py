@@ -1,62 +1,30 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db import get_session
-from app.models.payroll import PayRun
-from app.models.company import Company
-from app.models.employee import Employee
-from uuid import UUID
-from datetime import date
+from app.models.payroll import PayRun, PayRunStatus
+from app.schemas.payroll import PayrollCreate, PayrollRead
+from typing import List
 
 router = APIRouter(prefix="/api/v1/payroll", tags=["Payroll"])
 
-# ✅ List all pay runs
-@router.get("/")
-def list_payruns(db: Session = Depends(get_session)):
-    runs = db.query(PayRun).all()
-    return [
-        {
-            "id": run.id,
-            "company_id": run.company_id,
-            "period_start": run.period_start,
-            "period_end": run.period_end,
-            "check_date": run.check_date,
-            "status": run.status,
-        }
-        for run in runs
-    ]
+# ✅ GET all pay runs
+@router.get("/", response_model=List[PayrollRead])
+def list_payruns(session: Session = Depends(get_session)):
+    payruns = session.query(PayRun).all()
+    return payruns
 
 
-# ✅ Get a single pay run
-@router.get("/{payrun_id}")
-def get_payrun(payrun_id: UUID, db: Session = Depends(get_session)):
-    run = db.query(PayRun).filter(PayRun.id == payrun_id).first()
-    if not run:
-        raise HTTPException(status_code=404, detail="Pay run not found")
-    return {
-        "id": run.id,
-        "company_id": run.company_id,
-        "period_start": run.period_start,
-        "period_end": run.period_end,
-        "check_date": run.check_date,
-        "status": run.status,
-    }
-
-
-# ✅ Create a new pay run
-@router.post("/")
-def create_payrun(company_id: UUID, period_start: str, period_end: str, check_date: str, db: Session = Depends(get_session)):
-    company = db.query(Company).filter(Company.id == company_id).first()
-    if not company:
-        raise HTTPException(status_code=404, detail="Company not found")
-
-    new_run = PayRun(
-        company_id=company_id,
-        period_start=period_start,
-        period_end=period_end,
-        check_date=check_date,
-        status="DRAFT",
+# ✅ POST a new pay run
+@router.post("/", response_model=PayrollRead)
+def create_payrun(data: PayrollCreate, session: Session = Depends(get_session)):
+    new_payrun = PayRun(
+        company_id=data.company_id,
+        period_start=data.period_start,
+        period_end=data.period_end,
+        check_date=data.check_date,
+        status=data.status or PayRunStatus.DRAFT
     )
-    db.add(new_run)
-    db.commit()
-    db.refresh(new_run)
-    return {"message": "Pay run created successfully", "payrun_id": new_run.id}
+    session.add(new_payrun)
+    session.commit()
+    session.refresh(new_payrun)
+    return new_payrun
