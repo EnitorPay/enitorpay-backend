@@ -70,3 +70,10 @@ v0.2.5-safe	Persistent RDS connection, stable service daemon	Nov 6, 2025
 Alberto De La Rosa — Enitor Inc.
 
 “Con fuerza y visión.”
+
+---
+
+## 📜 License
+This project is proprietary software and is intended for **internal use within Enitor Inc.** only.  
+Unauthorized use, copying, or distribution of this code is strictly prohibited.  
+See the [LICENSE](LICENSE) file for details.
