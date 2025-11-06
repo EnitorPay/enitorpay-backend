@@ -5,6 +5,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-RDS-blue)
 ![Status](https://img.shields.io/badge/Build-Stable-success)
 ![Version](https://img.shields.io/badge/API-v0.2.5--safe-yellow)
+[![Live API](https://img.shields.io/badge/Live_API-Open-blue?logo=fastapi)](http://34.220.246.148:8081/docs)
 
 ---
 
