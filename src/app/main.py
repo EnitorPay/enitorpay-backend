@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import health, companies, employees, payroll
+from app.routers import health, companies, employees, payroll, paychecks, aiops
 
 app = FastAPI(title="EnitorPay API", version="0.1.0")
 
@@ -8,6 +8,8 @@ app.include_router(health.router)
 app.include_router(companies.router)
 app.include_router(employees.router)
 app.include_router(payroll.router)
+app.include_router(paychecks.router)
+app.include_router(aiops.router)
 
 @app.get("/")
 def root():

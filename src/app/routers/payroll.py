@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.db import get_session
+from app.db.session import get_session
 from app.models.payroll import PayRun, PayRunStatus
 from app.schemas.payroll import PayrollCreate, PayrollRead
 from typing import List
